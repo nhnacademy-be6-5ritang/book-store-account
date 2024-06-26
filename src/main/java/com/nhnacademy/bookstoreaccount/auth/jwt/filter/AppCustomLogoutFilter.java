@@ -66,8 +66,8 @@ public class AppCustomLogoutFilter extends GenericFilterBean {
 			return;
 		}
 
-		String email = jwtUtils.getEmailFromToken(refreshToken);
-		String redisKey = "RefreshToken:" + email;
+		Long userId = jwtUtils.getUserIdFromToken(refreshToken);
+		String redisKey = "RefreshToken:" + userId;
 		boolean refreshTokenExists = redisTemplate.opsForHash().hasKey(redisKey, "token");
 		if (!refreshTokenExists) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
