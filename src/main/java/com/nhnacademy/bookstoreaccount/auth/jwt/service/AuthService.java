@@ -70,6 +70,7 @@ public class AuthService {
 
 		Map<String, Object> tokens = new HashMap<>();
 		Cookie cookieWithRefreshToken = createCookie("Refresh-Token", newRefreshToken);
+		cookieWithRefreshToken.setPath("/");
 		tokens.put("access", newAccessToken);
 		tokens.put("CookieWithRefreshToken", cookieWithRefreshToken);
 
