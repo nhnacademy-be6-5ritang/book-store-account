@@ -1,0 +1,29 @@
+name: Continuous Integration
+
+on:
+  pull_request:
+    branches: [ "develop" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+      - name: Build with Maven
+        run: mvn -B package --file pom.xml
+        env:
+          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+
+      # 소나큐브 테스트 커버리지 측정
+      - name: Build and analyze with SonarQube
+        env:
+          SONAR_PROJECT_KEY: "5RITANG_TEST_COVERAGE"
+          SONAR_PROJECT_NAME: "5ritang-account"
+        run: mvn sonar:sonar -Dsonar.projectName=${{ env.SONAR_PROJECT_NAME }} -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }} -Dsonar.host.url=${{secrets.SONAR_HOST}} -Dsonar.login=${{secrets.SONAR_TOKEN}}
