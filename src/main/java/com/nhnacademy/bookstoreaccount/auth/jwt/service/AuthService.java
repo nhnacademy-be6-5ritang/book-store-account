@@ -61,13 +61,12 @@ public class AuthService {
 		}
 
 		Long id = jwtUtils.getUserIdFromToken(refreshToken);
-		String email = jwtUtils.getEmailFromToken(refreshToken);
 		String role = jwtUtils.getRoleFromToken(refreshToken);
 
 		String newAccessToken = jwtUtils.generateAccessToken("access", id, role, accessTokenExpiresIn);
 		String newRefreshToken = jwtUtils.generateRefreshToken("refresh", id, role, refreshTokenExpiresIn);
 
-		saveRefreshToken(email, newRefreshToken, refreshTokenExpiresIn);
+		saveRefreshToken(id, newRefreshToken, refreshTokenExpiresIn);
 
 		Map<String, Object> tokens = new HashMap<>();
 		Cookie cookieWithRefreshToken = createCookie("Refresh-Token", newRefreshToken);
@@ -87,13 +86,13 @@ public class AuthService {
 	}
 
 	private boolean isRefreshTokenExists(String refreshToken) {
-		String email = jwtUtils.getEmailFromToken(refreshToken);
-		String redisKey = "RefreshToken:" + email;
+		Long userId = jwtUtils.getUserIdFromToken(refreshToken);
+		String redisKey = "RefreshToken:" + userId;
 		return redisTemplate.opsForHash().hasKey(redisKey, "token");
 	}
 
-	private void saveRefreshToken(String userEmail, String refreshToken, Long expiresIn) {
-		String redisKey = "RefreshToken:" + userEmail;
+	private void saveRefreshToken(Long userId, String refreshToken, Long expiresIn) {
+		String redisKey = "RefreshToken:" + userId;
 		redisTemplate.delete(redisKey);
 		redisTemplate.opsForHash().put(redisKey, "token", refreshToken);
 		redisTemplate.expire(redisKey, Duration.ofMillis(expiresIn));
