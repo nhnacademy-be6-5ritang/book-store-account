@@ -1,0 +1,31 @@
+spring:
+
+  # JPA 설정
+  jpa:
+    open-in-view: false
+    show-sql: true    # Hibernate가 생성하는 SQL 쿼리를 콘솔에 출력
+    properties:
+      hibernate:
+        format_sql: true    # SQL 쿼리를 보기 쉽게 포맷팅하여 출력합니다.
+        use_sql_comments: true    # SQL 쿼리에 주석을 추가
+        highlight_sql: true   # SQL 쿼리를 하이라이트하여 출력
+        auto_quote_keyword: true    # SQL 키워드를 자동으로 인용하여 SQL 구문 오류를 방지합니다.
+        dialect: org.hibernate.dialect.MySQLDialect   # Hibernate가 사용할 데이터베이스 방언을 설정합니다
+    hibernate:
+      ddl-auto: create-drop #validate로 변경 예정
+    defer-datasource-initialization: true   # 데이터 소스 초기화를 지연시킵니다. 이는 데이터베이스 연결을 설정하기 전에 다른 초기화 로직을 완료할 수 있게 합니다.
+
+  # SQL 초기화 설정
+  sql:
+    init:
+      mode: always
+
+# 로깅 설정
+logging:
+  level:
+    org.hibernate.orm.jdbc.bind: trace
+    org.springframework:
+      transaction:
+        interceptor: trace
+        security: debug
+        web: debug

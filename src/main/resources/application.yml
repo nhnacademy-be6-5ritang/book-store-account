@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: "book-store-account"
+
+  profiles:
+    active: dev
+
+  # DataSource 설정
+  datasource:
+    url: jdbc:mysql://133.186.241.167:3306/nhn_academy_42
+    username: nhn_academy_42
+    password: ${MYSQL_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: org.apache.commons.dbcp2.BasicDataSource
+    dbcp2:
+      initial-size: 50    # 초기로 생성할 연결의 수를 설정합니다.
+      max-total: 50   # 풀에서 유지할 수 있는 최대 연결 수를 설정합니다.
+      max-idle: 50   # 유휴 상태로 유지할 최대 연결 수를 설정합니다.
+      min-idle: 50    # 유휴 상태로 유지할 최소 연결 수를 설정합니다.
+      test-on-borrow: true    # 풀에서 연결을 빌릴 때마다 해당 연결이 유효한지 검증할지 여부를 설정합니다.
+      validation-query: SELECT 1    # 연결 유효성을 검사하기 위해 실행할 SQL 쿼리를 설정합니다.
+
+  data:
+    redis:
+      host: 133.186.241.167
+      port: 6379
+      password: ${REDIS_PASSWORD}
+      database: 23
+
+  jwt:
+    secret: 33085d3cf14717d13f122979944e1e886636cc19e0f749dfbce423bb0031beae8b8758243ce109259c32a83a9325ef2c64433bc0339321d9540036a11884f8fc
+    access-token:
+      expires-in: 600000
+    refresh-token:
+      expires-in: 86400000
+
+server:
+  port: 8070

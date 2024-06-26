@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: "book-store-account"
+
+  datasource:
+    url: jdbc:h2:mem:test
+    driver-class-name: org.h2.Driver
+    username: sa
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
+  data:
+    redis:
+      host: 133.186.241.167
+      port: 6379
+      password: ${REDIS_PASSWORD}
+      database: 24
+
+  jwt:
+    secret: 33085d3cf14717d13f122979944e1e886636cc19e0f749dfbce423bb0031beae8b8758243ce109259c32a83a9325ef2c64433bc0339321d9540036a11884f8fc
+    access-token:
+      expires-in: 600000
+    refresh-token:
+      expires-in: 86400000
