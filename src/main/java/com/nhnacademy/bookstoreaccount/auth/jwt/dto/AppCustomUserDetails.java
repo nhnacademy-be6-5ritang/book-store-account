@@ -6,6 +6,8 @@ import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.nhnacademy.bookstoreaccount.auth.jwt.dto.response.GetUserInfoResponse;
+
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -17,12 +19,7 @@ public class AppCustomUserDetails implements UserDetails {
 		Collection<GrantedAuthority> collection = new ArrayList<>();
 
 		collection.add(
-			new GrantedAuthority() {
-				@Override
-				public String getAuthority() {
-					return user.role();
-				}
-			}
+			(GrantedAuthority)user::role
 		);
 
 		return collection;

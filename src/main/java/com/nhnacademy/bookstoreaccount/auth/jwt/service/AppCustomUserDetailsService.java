@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.nhnacademy.bookstoreaccount.auth.jwt.client.UserInfoClient;
 import com.nhnacademy.bookstoreaccount.auth.jwt.dto.AppCustomUserDetails;
-import com.nhnacademy.bookstoreaccount.auth.jwt.dto.GetUserInfoResponse;
+import com.nhnacademy.bookstoreaccount.auth.jwt.dto.response.GetUserInfoResponse;
 
 import lombok.RequiredArgsConstructor;
 
