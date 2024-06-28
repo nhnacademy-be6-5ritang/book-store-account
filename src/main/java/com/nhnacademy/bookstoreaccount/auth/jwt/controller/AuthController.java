@@ -6,9 +6,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nhnacademy.bookstoreaccount.auth.jwt.dto.response.ReissueTokensResponse;
 import com.nhnacademy.bookstoreaccount.auth.jwt.service.AuthService;
 
 import jakarta.servlet.http.Cookie;
@@ -42,7 +44,17 @@ public class AuthController {
 		response.setHeader("Authorization", (String)tokens.get("access"));
 		response.addCookie((Cookie)tokens.get("CookieWithRefreshToken"));
 
-		return ResponseEntity.status(HttpStatus.OK).body("Refresh Token 재발급 성공");
+		return ResponseEntity.status(HttpStatus.CREATED).body("Refresh Token 재발급 성공");
+	}
+
+	@PostMapping("/reissue-with-refresh-token")
+	public ResponseEntity<ReissueTokensResponse> reissueTokensWithRefreshToken(@RequestBody String refreshToken){
+		ReissueTokensResponse reissuedTokens = authService.reissueTokensWithRefreshToken(refreshToken);
+		if(reissuedTokens == null){
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+		}
+
+		return ResponseEntity.status(HttpStatus.CREATED).body(reissuedTokens);
 	}
 
 	private void removeCookieWithRefreshToken(Cookie[] cookies, HttpServletResponse response) {

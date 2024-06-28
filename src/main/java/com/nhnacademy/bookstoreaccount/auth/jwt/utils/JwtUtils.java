@@ -44,8 +44,7 @@ public class JwtUtils {
 	}
 
 	public String getRoleFromToken(String token) {
-		String role = getClaims(token).get("role", String.class);
-		return role;
+		return getClaims(token).get("role", String.class);
 	}
 
 	public String getTokenTypeFromToken(String token) {
@@ -78,7 +77,7 @@ public class JwtUtils {
 			.claim("userId", userId)
 			.claim("role", role)
 			.issuedAt(new Date(System.currentTimeMillis()))
-			.expiration(new Date(System.currentTimeMillis() + expiresIn * 1000))
+			.expiration(new Date(System.currentTimeMillis() + expiresIn))
 			.signWith(secretKey)
 			.compact();
 	}
@@ -89,7 +88,7 @@ public class JwtUtils {
 			.claim("userId", userId)
 			.claim("role", role)
 			.issuedAt(new Date(System.currentTimeMillis()))
-			.expiration(new Date(System.currentTimeMillis() + expiresIn * 1000))
+			.expiration(new Date(System.currentTimeMillis() + expiresIn))
 			.signWith(secretKey)
 			.compact();
 	}

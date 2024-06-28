@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import com.nhnacademy.bookstoreaccount.auth.jwt.dto.response.ReissueTokensResponse;
 import com.nhnacademy.bookstoreaccount.auth.jwt.utils.JwtUtils;
 
 import jakarta.servlet.http.Cookie;
@@ -47,6 +48,37 @@ public class AuthService {
 	public Map<String, Object> reissueTokens(Cookie[] cookies) {
 		String refreshToken = getRefreshTokenFromCookies(cookies);
 
+		Map<String, String> tokens = generateTokens(refreshToken);
+		if (tokens == null) {
+			return null;
+		}
+		String newAccessToken = tokens.get("access");
+		String newRefreshToken = tokens.get("refresh");
+
+		Cookie cookieWithRefreshToken = createCookie("Refresh-Token", newRefreshToken);
+		cookieWithRefreshToken.setPath("/");
+		Map<String, Object> result = new HashMap<>();
+		result.put("access", newAccessToken);
+		result.put("CookieWithRefreshToken", cookieWithRefreshToken);
+
+		return result;
+	}
+
+	public ReissueTokensResponse reissueTokensWithRefreshToken(String refreshToken) {
+		Map<String, String> tokens = generateTokens(refreshToken);
+		if (tokens == null) {
+			return null;
+		}
+		String newAccessToken = tokens.get("access");
+		String newRefreshToken = tokens.get("refresh");
+
+		return ReissueTokensResponse.builder()
+			.accessToken(newAccessToken)
+			.refreshToken(newRefreshToken)
+			.build();
+	}
+
+	private Map<String, String> generateTokens(String refreshToken) {
 		if (refreshToken == null || jwtUtils.validateToken(refreshToken) != null) {
 			return null;
 		}
@@ -68,11 +100,9 @@ public class AuthService {
 
 		saveRefreshToken(id, newRefreshToken, refreshTokenExpiresIn);
 
-		Map<String, Object> tokens = new HashMap<>();
-		Cookie cookieWithRefreshToken = createCookie("Refresh-Token", newRefreshToken);
-		cookieWithRefreshToken.setPath("/");
+		Map<String, String> tokens = new HashMap<>();
 		tokens.put("access", newAccessToken);
-		tokens.put("CookieWithRefreshToken", cookieWithRefreshToken);
+		tokens.put("refresh", newRefreshToken);
 
 		return tokens;
 	}
