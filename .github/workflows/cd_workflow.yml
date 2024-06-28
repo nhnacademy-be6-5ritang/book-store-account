@@ -22,7 +22,6 @@ jobs:
         run: mvn -B package --file pom.xml
         env:
           REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
-          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
 
       - name: Copy files via SCP
         uses: appleboy/scp-action@v0.1.7
