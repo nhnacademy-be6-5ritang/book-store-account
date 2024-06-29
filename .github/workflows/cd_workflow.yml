@@ -63,7 +63,7 @@ jobs:
           script: |
             echo "Starting new application..."
             source ~/.bashrc
-            nohup java -jar ~/target/BOOK-STORE-ACCOUNT.jar --server.pofiles.active=${{secrets.SPRING_PROFILE}} --server.port=${{ secrets.ACCOUNT_PORT }} > app.log 2>&1 &
+            nohup java -jar ~/target/BOOK-STORE-ACCOUNT.jar --server.pofiles.active=${{secrets.SPRING_PROFILE}} --server.port=${{ secrets.ACCOUNT_PORT }} --spring.datasource.password=${{ secrets.REDIS_PASSWORD }} > app.log 2>&1 &
             echo "New application started. Check app.log for details."
 
 
