@@ -22,6 +22,7 @@ jobs:
         run: mvn -B package --file pom.xml
         env:
           REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
 
       - name: Copy files via SCP
         uses: appleboy/scp-action@v0.1.7
@@ -63,7 +64,7 @@ jobs:
           script: |
             echo "Starting new application..."
             source ~/.bashrc
-            nohup java -jar ~/target/BOOK-STORE-ACCOUNT.jar --server.pofiles.active=${{secrets.SPRING_PROFILE}} --server.port=${{ secrets.ACCOUNT_PORT }} --spring.datasource.password=${{ secrets.REDIS_PASSWORD }} > app.log 2>&1 &
+            nohup java -jar ~/target/BOOK-STORE-ACCOUNT.jar --server.pofiles.active=${{secrets.SPRING_PROFILE}} --server.port=${{ secrets.ACCOUNT_PORT }} --spring.datasource.password=${{ secrets.MYSQL_PASSWORD }} --spring.redis.password=${{ secrets.REDIS_PASSWORD }} > app.log 2>&1 &
             echo "New application started. Check app.log for details."
 
 
