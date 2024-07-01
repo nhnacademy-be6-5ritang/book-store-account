@@ -78,7 +78,7 @@ public class JwtUtils {
 			.claim("userId", userId)
 			.claim("roles", roles)
 			.issuedAt(new Date(System.currentTimeMillis()))
-			.expiration(new Date(System.currentTimeMillis() + expiresIn * 1000))
+			.expiration(new Date(System.currentTimeMillis() + expiresIn))
 			.signWith(secretKey)
 			.compact();
 	}
@@ -89,7 +89,7 @@ public class JwtUtils {
 			.claim("userId", userId)
 			.claim("roles", roles)
 			.issuedAt(new Date(System.currentTimeMillis()))
-			.expiration(new Date(System.currentTimeMillis() + expiresIn * 1000))
+			.expiration(new Date(System.currentTimeMillis() + expiresIn))
 			.signWith(secretKey)
 			.compact();
 	}

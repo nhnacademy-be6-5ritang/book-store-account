@@ -2,15 +2,6 @@ spring:
   application:
     name: "book-store-account"
 
-  datasource:
-    url: jdbc:h2:mem:test
-    driver-class-name: org.h2.Driver
-    username: sa
-
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
-
   data:
     redis:
       host: 133.186.241.167

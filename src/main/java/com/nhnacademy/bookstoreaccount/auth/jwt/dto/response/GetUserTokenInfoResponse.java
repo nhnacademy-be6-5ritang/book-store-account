@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstoreaccount.auth.jwt.dto;
+package com.nhnacademy.bookstoreaccount.auth.jwt.dto.response;
 
 import java.util.List;
 

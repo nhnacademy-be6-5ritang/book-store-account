@@ -1,13 +1,12 @@
-spring:
 
-  # JPA 설정
-  jpa:
-    open-in-view: false   # 트랜잭션이 종료된 후에도 Hibernate 세션을 열어 두는 것을 방지합니다.
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
-    hibernate:
-      ddl-auto: none
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://admin:1234@localhost:8761/eureka
+  instance:
+    prefer-ip-address: true
 
 # 로깅
 logging:
