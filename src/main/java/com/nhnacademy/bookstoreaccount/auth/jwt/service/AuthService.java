@@ -9,9 +9,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import com.nhnacademy.bookstoreaccount.auth.jwt.dto.response.ReissueTokensResponse;
 import com.nhnacademy.bookstoreaccount.auth.jwt.utils.JwtUtils;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
@@ -35,7 +35,7 @@ public class AuthService {
 
 			Map<String, Object> userInfo = new HashMap<>();
 			userInfo.put("id", id);
-			userInfo.put("roles", roles);
+			userInfo.put("role", roles);
 
 			return userInfo;
 		}
@@ -43,9 +43,21 @@ public class AuthService {
 		return null;
 	}
 
-	public Map<String, Object> reissueTokens(Cookie[] cookies) {
-		String refreshToken = getRefreshTokenFromCookies(cookies);
+	public ReissueTokensResponse reissueTokensWithRefreshToken(String refreshToken) {
+		Map<String, String> tokens = generateTokens(refreshToken);
+		if (tokens == null) {
+			return null;
+		}
+		String newAccessToken = tokens.get("access");
+		String newRefreshToken = tokens.get("refresh");
 
+		return ReissueTokensResponse.builder()
+			.accessToken(newAccessToken)
+			.refreshToken(newRefreshToken)
+			.build();
+	}
+
+	private Map<String, String> generateTokens(String refreshToken) {
 		if (refreshToken == null || jwtUtils.validateToken(refreshToken) != null) {
 			return null;
 		}
@@ -67,21 +79,11 @@ public class AuthService {
 
 		saveRefreshToken(id, newRefreshToken, refreshTokenExpiresIn);
 
-		Map<String, Object> tokens = new HashMap<>();
-		Cookie cookieWithRefreshToken = createCookie("Refresh-Token", newRefreshToken);
+		Map<String, String> tokens = new HashMap<>();
 		tokens.put("access", newAccessToken);
-		tokens.put("CookieWithRefreshToken", cookieWithRefreshToken);
+		tokens.put("refresh", newRefreshToken);
 
 		return tokens;
-	}
-
-	private String getRefreshTokenFromCookies(Cookie[] cookies) {
-		for (Cookie cookie : cookies) {
-			if ("Refresh-Token".equals(cookie.getName())) {
-				return cookie.getValue();
-			}
-		}
-		return null;
 	}
 
 	private boolean isRefreshTokenExists(String refreshToken) {
@@ -95,13 +97,5 @@ public class AuthService {
 		redisTemplate.delete(redisKey);
 		redisTemplate.opsForHash().put(redisKey, "token", refreshToken);
 		redisTemplate.expire(redisKey, Duration.ofMillis(expiresIn));
-	}
-
-	private Cookie createCookie(String key, String value) {
-		Cookie cookie = new Cookie(key, value);
-		cookie.setMaxAge(24 * 60 * 60);
-		cookie.setHttpOnly(true);
-
-		return cookie;
 	}
 }
