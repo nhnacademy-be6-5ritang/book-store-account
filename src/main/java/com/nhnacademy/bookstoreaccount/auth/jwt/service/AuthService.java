@@ -35,7 +35,7 @@ public class AuthService {
 
 			Map<String, Object> userInfo = new HashMap<>();
 			userInfo.put("id", id);
-			userInfo.put("role", roles);
+			userInfo.put("roles", roles);
 
 			return userInfo;
 		}
