@@ -1,12 +1,13 @@
 package com.nhnacademy.bookstoreaccount.auth.jwt.dto;
 
+import java.util.List;
+
 import lombok.Builder;
 
 @Builder
-public record GetUserInfoResponse(
+public record GetUserTokenInfoResponse(
 	Long id,
 	String password,
-	String role
+	List<String> roles
 ) {
 }
-

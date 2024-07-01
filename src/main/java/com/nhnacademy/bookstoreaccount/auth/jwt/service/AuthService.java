@@ -2,6 +2,7 @@ package com.nhnacademy.bookstoreaccount.auth.jwt.service;
 
 import java.time.Duration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -30,13 +31,11 @@ public class AuthService {
 
 		if (accessToken != null && accessToken.startsWith("Bearer ")) {
 			Long id = jwtUtils.getUserIdFromToken(accessToken);
-			String email = jwtUtils.getEmailFromToken(accessToken);
-			String role = jwtUtils.getRoleFromToken(accessToken);
+			List<String> roles = jwtUtils.getRolesFromToken(accessToken);
 
 			Map<String, Object> userInfo = new HashMap<>();
 			userInfo.put("id", id);
-			userInfo.put("email", email);
-			userInfo.put("role", role);
+			userInfo.put("roles", roles);
 
 			return userInfo;
 		}
@@ -61,13 +60,12 @@ public class AuthService {
 		}
 
 		Long id = jwtUtils.getUserIdFromToken(refreshToken);
-		String email = jwtUtils.getEmailFromToken(refreshToken);
-		String role = jwtUtils.getRoleFromToken(refreshToken);
+		List<String> roles = jwtUtils.getRolesFromToken(refreshToken);
 
-		String newAccessToken = jwtUtils.generateAccessToken("access", id, role, accessTokenExpiresIn);
-		String newRefreshToken = jwtUtils.generateRefreshToken("refresh", id, role, refreshTokenExpiresIn);
+		String newAccessToken = jwtUtils.generateAccessToken("access", id, roles, accessTokenExpiresIn);
+		String newRefreshToken = jwtUtils.generateRefreshToken("refresh", id, roles, refreshTokenExpiresIn);
 
-		saveRefreshToken(email, newRefreshToken, refreshTokenExpiresIn);
+		saveRefreshToken(id, newRefreshToken, refreshTokenExpiresIn);
 
 		Map<String, Object> tokens = new HashMap<>();
 		Cookie cookieWithRefreshToken = createCookie("Refresh-Token", newRefreshToken);
@@ -87,13 +85,13 @@ public class AuthService {
 	}
 
 	private boolean isRefreshTokenExists(String refreshToken) {
-		String email = jwtUtils.getEmailFromToken(refreshToken);
-		String redisKey = "RefreshToken:" + email;
+		Long userId = jwtUtils.getUserIdFromToken(refreshToken);
+		String redisKey = "RefreshToken:" + userId;
 		return redisTemplate.opsForHash().hasKey(redisKey, "token");
 	}
 
-	private void saveRefreshToken(String userEmail, String refreshToken, Long expiresIn) {
-		String redisKey = "RefreshToken:" + userEmail;
+	private void saveRefreshToken(Long userId, String refreshToken, Long expiresIn) {
+		String redisKey = "RefreshToken:" + userId;
 		redisTemplate.delete(redisKey);
 		redisTemplate.opsForHash().put(redisKey, "token", refreshToken);
 		redisTemplate.expire(redisKey, Duration.ofMillis(expiresIn));

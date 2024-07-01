@@ -2,30 +2,25 @@ package com.nhnacademy.bookstoreaccount.auth.jwt.dto;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class AppCustomUserDetails implements UserDetails {
-	private final GetUserInfoResponse user;
+	private final GetUserTokenInfoResponse user;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		Collection<GrantedAuthority> collection = new ArrayList<>();
-
-		collection.add(
-			new GrantedAuthority() {
-				@Override
-				public String getAuthority() {
-					return user.role();
-				}
-			}
-		);
-
-		return collection;
+		List<GrantedAuthority> authorities = new ArrayList<>();
+		for (String role : user.roles()) {
+			authorities.add(new SimpleGrantedAuthority(role));
+		}
+		return authorities;
 	}
 
 	@Override

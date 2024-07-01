@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.nhnacademy.bookstoreaccount.auth.jwt.client.UserInfoClient;
 import com.nhnacademy.bookstoreaccount.auth.jwt.dto.AppCustomUserDetails;
-import com.nhnacademy.bookstoreaccount.auth.jwt.dto.GetUserInfoResponse;
+import com.nhnacademy.bookstoreaccount.auth.jwt.dto.GetUserTokenInfoResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,7 +20,7 @@ public class AppCustomUserDetailsService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {
-		GetUserInfoResponse user = userInfoClient.getUserInfoByEmail(userEmail);
+		GetUserTokenInfoResponse user = userInfoClient.getUserInfoByEmail(userEmail);
 
 		if (Objects.isNull(user)) {
 			return null;
