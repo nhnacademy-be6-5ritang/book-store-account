@@ -66,10 +66,7 @@ jobs:
             source ~/.bashrc
             export MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}
             export REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}
-            nohup java -jar ~/target/BOOK-STORE-ACCOUNT.jar --server.pofiles.active=${{secrets.SPRING_PROFILE}} --server.port=${{ secrets.ACCOUNT_PORT }} --spring.datasource.password=$MYSQL_PASSWORD --spring.redis.password=$REDIS_PASSWORD > app.log 2>&1 &
+            nohup java -jar ~/target/BOOK-STORE-ACCOUNT.jar --server.pofiles.active=${{secrets.SPRING_PROFILE}} --server.port=${{ secrets.ACCOUNT_PORT }} --spring.datasource.password=$MYSQL_PASSWORD --spring.redis.password=$REDIS_PASSWORD > book-store-account.log 2>&1 &
             echo "New application started. Check app.log for details."
-            
 
 # 버전 추가? 잡 나누기 조건 걸기  주문 결제 다 끝나고 진행
-
-
