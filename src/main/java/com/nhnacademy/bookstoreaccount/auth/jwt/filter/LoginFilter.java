@@ -3,7 +3,7 @@ package com.nhnacademy.bookstoreaccount.auth.jwt.filter;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.List;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
@@ -50,12 +50,10 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 		Authentication authentication) throws IOException, ServletException {
 		Long userId = Long.parseLong(authentication.getName());
 		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-		Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
-		GrantedAuthority auth = iterator.next();
-		String role = auth.getAuthority();
+		List<String> roles = authorities.stream().map(GrantedAuthority::getAuthority).toList();
 
-		String accessToken = jwtUtils.generateAccessToken("access", userId, role, accessTokenExpiresIn);
-		String refreshToken = jwtUtils.generateRefreshToken("refresh", userId, role, refreshTokenExpiresIn);
+		String accessToken = jwtUtils.generateAccessToken("access", userId, roles, accessTokenExpiresIn);
+		String refreshToken = jwtUtils.generateRefreshToken("refresh", userId, roles, refreshTokenExpiresIn);
 
 		saveRefreshToken(userId, refreshToken, refreshTokenExpiresIn);
 

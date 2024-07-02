@@ -2,6 +2,8 @@ package com.nhnacademy.bookstoreaccount.auth.jwt.utils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -39,12 +41,11 @@ public class JwtUtils {
 		return getClaims(token).get("userId", Long.class);
 	}
 
-	public String getEmailFromToken(String token) {
-		return getClaims(token).get("email", String.class);
-	}
-
-	public String getRoleFromToken(String token) {
-		return getClaims(token).get("role", String.class);
+	public List<String> getRolesFromToken(String token) {
+		Claims claims = getClaims(token);
+		return ((List<?>) claims.get("roles")).stream()
+			.map(Object::toString)
+			.collect(Collectors.toList());
 	}
 
 	public String getTokenTypeFromToken(String token) {
@@ -71,22 +72,22 @@ public class JwtUtils {
 		return errorMessage;
 	}
 
-	public String generateAccessToken(String tokenType, Long userId, String role, Long expiresIn) {
+	public String generateAccessToken(String tokenType, Long userId, List<String> roles, Long expiresIn) {
 		return "Bearer " + Jwts.builder()
 			.claim("token-type", tokenType)
 			.claim("userId", userId)
-			.claim("role", role)
+			.claim("roles", roles)
 			.issuedAt(new Date(System.currentTimeMillis()))
 			.expiration(new Date(System.currentTimeMillis() + expiresIn))
 			.signWith(secretKey)
 			.compact();
 	}
 
-	public String generateRefreshToken(String tokenType, Long userId, String role, Long expiresIn) {
+	public String generateRefreshToken(String tokenType, Long userId, List<String> roles, Long expiresIn) {
 		return Jwts.builder()
 			.claim("token-type", tokenType)
 			.claim("userId", userId)
-			.claim("role", role)
+			.claim("roles", roles)
 			.issuedAt(new Date(System.currentTimeMillis()))
 			.expiration(new Date(System.currentTimeMillis() + expiresIn))
 			.signWith(secretKey)
