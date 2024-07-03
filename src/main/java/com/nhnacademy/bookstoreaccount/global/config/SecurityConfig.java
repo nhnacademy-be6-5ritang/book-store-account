@@ -43,7 +43,7 @@ public class SecurityConfig {
 			.formLogin(AbstractHttpConfigurer::disable)
 			.httpBasic(AbstractHttpConfigurer::disable)
 			.authorizeHttpRequests((requests) -> requests
-				.requestMatchers("/login", "/auth/reissue").permitAll()
+				.requestMatchers("/auth/login", "/auth/reissue", "/auth/logout").permitAll()
 				.anyRequest().permitAll()
 			)
 			// .addFilterBefore(new JwtFilter(jwtUtils), LoginFilter.class)

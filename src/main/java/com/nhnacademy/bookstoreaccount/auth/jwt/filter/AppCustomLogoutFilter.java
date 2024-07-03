@@ -15,12 +15,15 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 public class AppCustomLogoutFilter extends GenericFilterBean {
 	private final RedisTemplate<String, Object> redisTemplate;
 	private final JwtUtils jwtUtils;
+
+	public AppCustomLogoutFilter(RedisTemplate<String, Object> redisTemplate, JwtUtils jwtUtils) {
+		this.redisTemplate = redisTemplate;
+		this.jwtUtils = jwtUtils;
+	}
 
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
@@ -31,7 +34,7 @@ public class AppCustomLogoutFilter extends GenericFilterBean {
 	private void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 		throws IOException, ServletException {
 		String requestUri = request.getRequestURI();
-		if (!requestUri.matches("^/logout$")) {
+		if (!requestUri.matches("^/auth/logout$")) {
 			filterChain.doFilter(request, response);
 			return;
 		}
