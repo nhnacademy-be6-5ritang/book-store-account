@@ -21,17 +21,27 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@RequiredArgsConstructor
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 	private final AuthenticationManager authenticationManager;
 	private final JwtUtils jwtUtils;
 	private final RedisTemplate<String, Object> redisTemplate;
 	private final Long accessTokenExpiresIn;
 	private final Long refreshTokenExpiresIn;
+
+	public LoginFilter(
+		AuthenticationManager authenticationManager, JwtUtils jwtUtils, RedisTemplate<String, Object> redisTemplate,
+		Long accessTokenExpiresIn, Long refreshTokenExpiresIn
+	) {
+		this.authenticationManager = authenticationManager;
+		this.jwtUtils = jwtUtils;
+		this.redisTemplate = redisTemplate;
+		this.accessTokenExpiresIn = accessTokenExpiresIn;
+		this.refreshTokenExpiresIn = refreshTokenExpiresIn;
+		setFilterProcessesUrl("/auth/login");
+	}
 
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
