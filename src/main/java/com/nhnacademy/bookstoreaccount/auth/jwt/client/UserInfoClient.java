@@ -8,6 +8,6 @@ import com.nhnacademy.bookstoreaccount.auth.jwt.dto.response.GetUserTokenInfoRes
 
 @FeignClient(name="UserInfoService", url="http://localhost:8083")
 public interface UserInfoClient {
-	@GetMapping("/internal/users/info")
+	@GetMapping("/api/internal/users/info")
 	GetUserTokenInfoResponse getUserInfoByEmail(@RequestHeader("X-User-Email") String userEmail);
 }
