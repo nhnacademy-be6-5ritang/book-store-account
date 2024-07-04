@@ -14,6 +14,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nhnacademy.bookstoreaccount.auth.jwt.dto.request.LoginRequest;
 import com.nhnacademy.bookstoreaccount.auth.jwt.utils.JwtUtils;
 
 import jakarta.servlet.FilterChain;
@@ -30,6 +32,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 	private final RedisTemplate<String, Object> redisTemplate;
 	private final Long accessTokenExpiresIn;
 	private final Long refreshTokenExpiresIn;
+	private final ObjectMapper objectMapper = new ObjectMapper();
 
 	public LoginFilter(
 		AuthenticationManager authenticationManager, JwtUtils jwtUtils, RedisTemplate<String, Object> redisTemplate,
@@ -46,13 +49,19 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
 		throws AuthenticationException {
-		String userEmail = obtainUsername(request);
-		String password = obtainPassword(request);
+		LoginRequest loginRequest;
+		try {
+			loginRequest = objectMapper.readValue(request.getInputStream(), LoginRequest.class);
+			String userEmail = loginRequest.email();
+			String password = loginRequest.password();
 
-		UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userEmail, password,
-			null);
+			UsernamePasswordAuthenticationToken authToken
+				= new UsernamePasswordAuthenticationToken(userEmail, password, null);
 
-		return authenticationManager.authenticate(authToken);
+			return authenticationManager.authenticate(authToken);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
@@ -70,6 +79,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 		response.setHeader("Authorization", accessToken);
 		response.addCookie(createCookie("Refresh-Token", refreshToken));
 		response.setStatus(HttpStatus.OK.value());
+		response.setContentType("application/json");
 	}
 
 	@Override
