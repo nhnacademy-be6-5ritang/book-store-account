@@ -35,10 +35,6 @@ public class AppCustomUserDetails implements UserDetails {
 		return String.valueOf(user.id());
 	}
 
-	public String getUserStatus(){
-		return user.status();
-	}
-
 	@Override
 	public boolean isAccountNonExpired() {
 		return true;
