@@ -26,6 +26,10 @@ public class AppCustomUserDetailsService implements UserDetailsService {
 			return null;
 		}
 
+		if ("DORMANT".equals(user.status())) {
+			return null;
+		}
+
 		return new AppCustomUserDetails(user);
 	}
 }
