@@ -43,7 +43,7 @@ public class JwtUtils {
 
 	public List<String> getRolesFromToken(String token) {
 		Claims claims = getClaims(token);
-		return ((List<?>) claims.get("roles")).stream()
+		return ((List<?>)claims.get("roles")).stream()
 			.map(Object::toString)
 			.collect(Collectors.toList());
 	}
@@ -72,19 +72,9 @@ public class JwtUtils {
 		return errorMessage;
 	}
 
-	public String generateAccessToken(String tokenType, Long userId, List<String> roles, Long expiresIn) {
-		return "Bearer " + Jwts.builder()
-			.claim("token-type", tokenType)
-			.claim("userId", userId)
-			.claim("roles", roles)
-			.issuedAt(new Date(System.currentTimeMillis()))
-			.expiration(new Date(System.currentTimeMillis() + expiresIn))
-			.signWith(secretKey)
-			.compact();
-	}
-
-	public String generateRefreshToken(String tokenType, Long userId, List<String> roles, Long expiresIn) {
-		return Jwts.builder()
+	public String generateToken(String tokenType, Long userId, List<String> roles, Long expiresIn) {
+		String tokenTypePrefix = "access".equals(tokenType) ? "Bearer " : "";
+		return tokenTypePrefix + Jwts.builder()
 			.claim("token-type", tokenType)
 			.claim("userId", userId)
 			.claim("roles", roles)
