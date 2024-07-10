@@ -1,6 +1,8 @@
 package com.nhnacademy.bookstoreaccount.auth.jwt.filter;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
@@ -16,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.bookstoreaccount.auth.jwt.dto.request.LoginRequest;
+import com.nhnacademy.bookstoreaccount.auth.jwt.dto.response.LoginResponse;
 import com.nhnacademy.bookstoreaccount.auth.jwt.utils.JwtUtils;
 
 import jakarta.servlet.FilterChain;
@@ -71,15 +74,23 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 		List<String> roles = authorities.stream().map(GrantedAuthority::getAuthority).toList();
 
-		String accessToken = jwtUtils.generateAccessToken("access", userId, roles, accessTokenExpiresIn);
-		String refreshToken = jwtUtils.generateRefreshToken("refresh", userId, roles, refreshTokenExpiresIn);
+		String accessToken = jwtUtils.generateToken("access", userId, roles, accessTokenExpiresIn);
+		String refreshToken = jwtUtils.generateToken("refresh", userId, roles, refreshTokenExpiresIn);
 
 		saveRefreshToken(userId, refreshToken, refreshTokenExpiresIn);
 
-		response.setHeader("Authorization", accessToken);
-		response.addCookie(createCookie("Refresh-Token", refreshToken));
+		LoginResponse loginResponse = LoginResponse.builder()
+			.accessToken(accessToken)
+			.refreshToken(refreshToken)
+			.build();
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		String loginResponseJson = objectMapper.writeValueAsString(loginResponse);
+
 		response.setStatus(HttpStatus.OK.value());
 		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().write(loginResponseJson);
 	}
 
 	@Override
@@ -93,15 +104,5 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 		redisTemplate.delete(redisKey);
 		redisTemplate.opsForHash().put(redisKey, "token", refreshToken);
 		redisTemplate.expire(redisKey, Duration.ofMillis(expiresIn));
-	}
-
-	private Cookie createCookie(String key, String value) {
-		Cookie cookie = new Cookie(key, value);
-		cookie.setMaxAge(24 * 60 * 60);
-		// cookie.setSecure(true);
-		cookie.setPath("/");
-		cookie.setHttpOnly(true);
-
-		return cookie;
 	}
 }

@@ -74,8 +74,8 @@ public class AuthService {
 		Long id = jwtUtils.getUserIdFromToken(refreshToken);
 		List<String> roles = jwtUtils.getRolesFromToken(refreshToken);
 
-		String newAccessToken = jwtUtils.generateAccessToken("access", id, roles, accessTokenExpiresIn);
-		String newRefreshToken = jwtUtils.generateRefreshToken("refresh", id, roles, refreshTokenExpiresIn);
+		String newAccessToken = jwtUtils.generateToken("access", id, roles, accessTokenExpiresIn);
+		String newRefreshToken = jwtUtils.generateToken("refresh", id, roles, refreshTokenExpiresIn);
 
 		saveRefreshToken(id, newRefreshToken, refreshTokenExpiresIn);
 
