@@ -26,7 +26,7 @@ public class AppCustomUserDetailsService implements UserDetailsService {
 			return null;
 		}
 
-		if ("DORMANT".equals(user.status())) {
+		if ("WITHDRAW".equals(user.status())) {
 			return null;
 		}
 

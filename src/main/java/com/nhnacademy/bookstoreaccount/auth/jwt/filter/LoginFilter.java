@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -17,6 +18,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.nhnacademy.bookstoreaccount.auth.jwt.dto.request.LoginRequest;
 import com.nhnacademy.bookstoreaccount.auth.jwt.dto.response.LoginResponse;
 import com.nhnacademy.bookstoreaccount.auth.jwt.utils.JwtUtils;
@@ -82,9 +84,11 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 		LoginResponse loginResponse = LoginResponse.builder()
 			.accessToken(accessToken)
 			.refreshToken(refreshToken)
+			.lastLoginAt(LocalDateTime.now())
 			.build();
 
 		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.registerModule(new JavaTimeModule()); // Registering the JavaTimeModule
 		String loginResponseJson = objectMapper.writeValueAsString(loginResponse);
 
 		response.setStatus(HttpStatus.OK.value());
