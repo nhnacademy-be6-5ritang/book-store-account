@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import com.nhnacademy.bookstoreaccount.auth.jwt.client.UserInfoClient;
+import com.nhnacademy.bookstoreaccount.auth.jwt.dto.response.GetPaycoUserTokenInfoResponse;
+import com.nhnacademy.bookstoreaccount.auth.jwt.dto.response.PaycoLoginResponse;
 import com.nhnacademy.bookstoreaccount.auth.jwt.dto.response.ReissueTokensResponse;
 import com.nhnacademy.bookstoreaccount.auth.jwt.utils.JwtUtils;
 
@@ -20,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthService {
 	private final RedisTemplate<String, Object> redisTemplate;
 	private final JwtUtils jwtUtils;
+	private final UserInfoClient userInfoClient;
 
 	@Value("${spring.jwt.access-token.expires-in}")
 	private Long accessTokenExpiresIn;
@@ -97,5 +101,31 @@ public class AuthService {
 		redisTemplate.delete(redisKey);
 		redisTemplate.opsForHash().put(redisKey, "token", refreshToken);
 		redisTemplate.expire(redisKey, Duration.ofMillis(expiresIn));
+	}
+
+	public PaycoLoginResponse getTokensForPaycoUser(String paycoIdNo) {
+		GetPaycoUserTokenInfoResponse paycoUserTokenInfoResponse = userInfoClient.getUserInfoByPaycoId(paycoIdNo)
+			.getBody();
+		if (paycoUserTokenInfoResponse == null) {
+			return null;
+		}
+
+		Long userId = paycoUserTokenInfoResponse.id();
+		List<String> roles = paycoUserTokenInfoResponse.roles();
+		String status = paycoUserTokenInfoResponse.status();
+
+		if (!"ACTIVE".equals(status)) {
+			return null;
+		}
+
+		String accessToken = jwtUtils.generateToken("access", userId, roles, accessTokenExpiresIn);
+		String refreshToken = jwtUtils.generateToken("refresh", userId, roles, refreshTokenExpiresIn);
+
+		saveRefreshToken(userId, refreshToken, refreshTokenExpiresIn);
+
+		return PaycoLoginResponse.builder()
+			.accessToken(accessToken)
+			.refreshToken(refreshToken)
+			.build();
 	}
 }
