@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nhnacademy.bookstoreaccount.auth.jwt.dto.request.ReissueTokenRequest;
+import com.nhnacademy.bookstoreaccount.auth.jwt.dto.response.PaycoLoginResponse;
 import com.nhnacademy.bookstoreaccount.auth.jwt.dto.response.ReissueTokensResponse;
 import com.nhnacademy.bookstoreaccount.auth.jwt.service.AuthService;
 
@@ -29,14 +31,26 @@ public class AuthController {
 	}
 
 	@PostMapping("/reissue-with-refresh-token")
-	public ResponseEntity<ReissueTokensResponse> reissueTokensWithRefreshToken(@RequestBody ReissueTokenRequest reissueTokenRequest){
+	public ResponseEntity<ReissueTokensResponse> reissueTokensWithRefreshToken(
+		@RequestBody ReissueTokenRequest reissueTokenRequest) {
 		ReissueTokensResponse reissuedTokens = authService.reissueTokensWithRefreshToken(
 			reissueTokenRequest.refreshToken()
 		);
-		if(reissuedTokens == null){
+		if (reissuedTokens == null) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 		}
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(reissuedTokens);
 	}
+
+	@PostMapping("/tokens-for-payco-user")
+	public ResponseEntity<PaycoLoginResponse> getTokensForPaycoUser(@RequestParam String paycoIdNo) {
+		PaycoLoginResponse paycoUserTokens = authService.getTokensForPaycoUser(paycoIdNo);
+		if (paycoUserTokens == null) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+		}
+
+		return ResponseEntity.status(HttpStatus.CREATED).body(paycoUserTokens);
+	}
+
 }
