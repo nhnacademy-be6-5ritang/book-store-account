@@ -66,7 +66,7 @@ jobs:
             source ~/.bashrc
             export MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}
             export REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}
-            nohup java -jar ~/target/BOOK-STORE-ACCOUNT.jar --server.profiles.active=prod --server.port=${{ secrets.ACCOUNT_PORT }} --spring.datasource.password=$MYSQL_PASSWORD --spring.redis.password=$REDIS_PASSWORD > account.log 2>&1 &
+            nohup java -jar ~/target/BOOK-STORE-ACCOUNT.jar --spring.profiles.active=prod --server.port=${{ secrets.ACCOUNT_PORT }} --spring.datasource.password=$MYSQL_PASSWORD --spring.redis.password=$REDIS_PASSWORD > account.log 2>&1 &
             echo "New application started. Check app.log for details."
             
 
