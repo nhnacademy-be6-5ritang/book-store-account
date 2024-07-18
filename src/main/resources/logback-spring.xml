@@ -9,8 +9,8 @@
     <property name="APP_NAME" value="5ritang-store-account"/>
     <!--  로그 파일 크기 설정  -->
     <property name="MAX_HISTORY" value="10"/>
-    <property name="MAX_FILE_SIZE" value="50MB"/>
-    <property name="TOTAL_SIZE" value="500MB"/>
+    <property name="MAX_FILE_SIZE" value="10MB"/>
+    <property name="TOTAL_SIZE" value="100MB"/>
     <!--  Spring Boot의 기본 로그백 설정 파일 포함  -->
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
     <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
