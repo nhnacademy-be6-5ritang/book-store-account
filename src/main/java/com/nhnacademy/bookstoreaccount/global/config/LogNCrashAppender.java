@@ -18,29 +18,26 @@ import ch.qos.logback.core.AppenderBase;
 public class LogNCrashAppender extends AppenderBase<ILoggingEvent> {
 	private final RestTemplate restTemplate = new RestTemplate();
 	private static final Logger logger = LoggerFactory.getLogger(LogNCrashAppender.class);
-	private static final String PROFILE = System.getenv("SERVER_PROFILE");
 
 	@Override
 	protected void append(ILoggingEvent loggingEvent) {
-		if (PROFILE.equals("prod")) {
-			Map<String, Object> logData = new HashMap<>();
-			logData.put("projectName", "Xyx7DoyszcG66ULx");
-			logData.put("projectVersion", "1.0.0");
-			logData.put("logVersion", "v2");
-			logData.put("body", loggingEvent.getFormattedMessage());
-			logData.put("logSource", "http");
-			logData.put("logType", "log");
-			logData.put("platform", "5ritang-Account");
-			logData.put("host", "192.168.0.75");
-			logData.put("logLevel", loggingEvent.getLevel().toString());
+		Map<String, Object> logData = new HashMap<>();
+		logData.put("projectName", "Xyx7DoyszcG66ULx");
+		logData.put("projectVersion", "1.0.0");
+		logData.put("logVersion", "v2");
+		logData.put("body", loggingEvent.getFormattedMessage());
+		logData.put("logSource", "http");
+		logData.put("logType", "log");
+		logData.put("platform", "5ritang-Account");
+		logData.put("host", "192.168.0.75");
+		logData.put("logLevel", loggingEvent.getLevel().toString());
 
-			String url = "https://api-logncrash.nhncloudservice.com/v2/log";
+		String url = "https://api-logncrash.nhncloudservice.com/v2/log";
 
-			try {
-				restTemplate.postForEntity(url, logData, String.class);
-			} catch (Exception e) {
-				logger.error("외부 서비스로 로그를 보내는 동안 에러가 발생했습니다.", e);
-			}
+		try {
+			restTemplate.postForEntity(url, logData, String.class);
+		} catch (Exception e) {
+			logger.error("외부 서비스로 로그를 보내는 동안 에러가 발생했습니다.", e);
 		}
 	}
 }

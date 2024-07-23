@@ -91,8 +91,13 @@
     </appender>
 
     <!-- LogNCrashAppender 추가 -->
-    <appender name="LOG_N_CRASH" class="com.nhnacademy.bookstoreaccount.global.config.LogNCrashAppender">
-    </appender>
+    <springProfile name="prod">
+        <appender name="LOG_N_CRASH" class="com.nhnacademy.bookstoreaccount.global.config.LogNCrashAppender"/>
+
+        <root level="info">
+            <appender-ref ref="LOG_N_CRASH"/>
+        </root>
+    </springProfile>
 
     <!--  root 로거 설정  -->
     <root level="info">
@@ -101,7 +106,6 @@
         <appender-ref ref="INFO_FILE"/>
         <appender-ref ref="WARN_FILE"/>
         <appender-ref ref="ERROR_FILE"/>
-        <appender-ref ref="LOG_N_CRASH"/>
     </root>
 
 </configuration>
