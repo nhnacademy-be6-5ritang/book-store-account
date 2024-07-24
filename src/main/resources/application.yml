@@ -25,3 +25,7 @@ server:
 logging:
   file:
     path: ./logs
+
+  level:
+    com.netflix.discovery: ERROR
+    com.netflix.eureka: ERROR
