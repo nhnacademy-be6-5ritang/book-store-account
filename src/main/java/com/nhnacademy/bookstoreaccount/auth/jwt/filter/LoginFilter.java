@@ -101,6 +101,10 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 	protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
 		AuthenticationException failed) throws IOException, ServletException {
 		response.setStatus(HttpStatus.UNAUTHORIZED.value());
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+		String errorMessage = "{\"message\": \"비밀번호가 틀렸습니다\"}";
+		response.getWriter().write(errorMessage);
 	}
 
 	private void saveRefreshToken(Long userId, String refreshToken, Long expiresIn) {
