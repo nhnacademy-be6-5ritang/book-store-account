@@ -1,3 +1,6 @@
+server:
+  port: 8070
+
 spring:
   application:
     name: "book-store-account"
@@ -19,8 +22,16 @@ spring:
     refresh-token:
       expires-in: 86400000
 
-server:
-  port: 8070
+springdoc:
+  api-docs:
+    path: /auth-api
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  swagger-ui:
+    operations-sorter: alpha
+    tags-sorter: alpha
+    path: /auth-api.html
+    disable-swagger-default-url: true
 
 logging:
   file:
@@ -29,3 +40,4 @@ logging:
   level:
     com.netflix.discovery: ERROR
     com.netflix.eureka: ERROR
+
