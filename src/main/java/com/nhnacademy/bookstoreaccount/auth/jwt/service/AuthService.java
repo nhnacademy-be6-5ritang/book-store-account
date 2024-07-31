@@ -17,6 +17,7 @@ import com.nhnacademy.bookstoreaccount.auth.jwt.utils.JwtUtils;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 @Service
 @RequiredArgsConstructor
@@ -25,8 +26,10 @@ public class AuthService {
 	private final JwtUtils jwtUtils;
 	private final UserInfoClient userInfoClient;
 
+	@Setter
 	@Value("${spring.jwt.access-token.expires-in}")
 	private Long accessTokenExpiresIn;
+	@Setter
 	@Value("${spring.jwt.refresh-token.expires-in}")
 	private Long refreshTokenExpiresIn;
 

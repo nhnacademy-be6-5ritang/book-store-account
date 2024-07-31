@@ -1,8 +1,6 @@
 package com.nhnacademy.bookstoreaccount.auth.jwt.filter;
 
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -25,7 +23,6 @@ import com.nhnacademy.bookstoreaccount.auth.jwt.utils.JwtUtils;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -71,7 +68,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
 	@Override
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
-		Authentication authentication) throws IOException, ServletException {
+		Authentication authentication) throws IOException {
 		Long userId = Long.parseLong(authentication.getName());
 		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 		List<String> roles = authorities.stream().map(GrantedAuthority::getAuthority).toList();
@@ -99,7 +96,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
 	@Override
 	protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
-		AuthenticationException failed) throws IOException, ServletException {
+		AuthenticationException failed) throws IOException {
 		response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
