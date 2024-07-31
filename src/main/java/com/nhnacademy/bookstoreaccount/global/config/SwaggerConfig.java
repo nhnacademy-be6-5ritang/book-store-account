@@ -18,7 +18,7 @@ public class SwaggerConfig {
 
 	@Bean
 	public GroupedOpenApi api() {
-		String[] paths = {"/api/**"};
+		String[] paths = {"/auth/**"};
 		String[] packagesToScan = {"com.nhnacademy.bookstoreaccount"};
 		return GroupedOpenApi.builder()
 			.group("auth-api")
