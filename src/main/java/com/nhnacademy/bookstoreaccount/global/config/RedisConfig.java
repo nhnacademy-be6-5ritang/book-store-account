@@ -10,24 +10,25 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import com.nhnacademy.bookstoreaccount.keymanager.property.RedisProperty;
+import com.nhnacademy.bookstoreaccount.keymanager.service.KeyManagerService;
+
+import lombok.RequiredArgsConstructor;
+
 @Configuration
+@RequiredArgsConstructor
 public class RedisConfig {
-	@Value("${spring.data.redis.host}")
-	private String host;
-	@Value("${spring.data.redis.port}")
-	private int port;
-	@Value("${spring.data.redis.password}")
-	private String password;
-	@Value("${spring.data.redis.database}")
-	private int database;
+	private final RedisProperty redisProperty;
+	private final KeyManagerService keyManagerService;
 
 	@Bean
 	public RedisConnectionFactory redisConnectionFactory() {
 		RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
-		redisStandaloneConfiguration.setHostName(host);
-		redisStandaloneConfiguration.setPort(port);
-		redisStandaloneConfiguration.setPassword(password);
-		redisStandaloneConfiguration.setDatabase(database);
+		redisStandaloneConfiguration.setHostName(keyManagerService.getSecret(redisProperty.getHost()));
+		redisStandaloneConfiguration.setPort(Integer.parseInt(keyManagerService.getSecret(redisProperty.getPort())));
+		redisStandaloneConfiguration.setPassword(keyManagerService.getSecret(redisProperty.getPassword()));
+		redisStandaloneConfiguration.setDatabase(
+			Integer.parseInt(keyManagerService.getSecret(redisProperty.getDatabase())));
 		return new LettuceConnectionFactory(redisStandaloneConfiguration);
 	}
 

@@ -92,7 +92,7 @@
 
     <!-- LogNCrashAppender 추가 -->
     <springProfile name="prod">
-        <appender name="LOG_N_CRASH" class="com.nhnacademy.bookstoreaccount.global.config.LogNCrashAppender"/>
+        <appender name="LOG_N_CRASH" class="com.nhnacademy.bookstoreaccount.global.util.LogNCrashAppender"/>
 
         <root level="info">
             <appender-ref ref="LOG_N_CRASH"/>
