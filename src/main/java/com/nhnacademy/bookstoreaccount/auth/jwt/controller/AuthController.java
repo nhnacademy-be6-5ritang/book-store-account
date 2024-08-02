@@ -25,8 +25,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 /**
- * 인증 인가 관련 API를 제공하는 컨트롤러입니다.
  * @author 김태환
+ * 인증 인가 관련 API 를 제공하는 컨트롤러입니다.
  */
 @Tag(name = "Auth", description = "인증 인가 관련 API")
 @RestController

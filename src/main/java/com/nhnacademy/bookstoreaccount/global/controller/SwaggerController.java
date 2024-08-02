@@ -14,6 +14,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * @author 김태환
+ * Swagger API 문서를 제공하는 컨트롤러입니다.
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
